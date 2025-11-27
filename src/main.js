@@ -102,7 +102,7 @@ function initAR() {
         roughness: 0.4
     })
     const cube = new THREE.Mesh(geometry, material)
-    cube.position.set(0, 0.5, 0)
+    cube.position.set(0, 0, 0)
     markerRoot.add(cube)
 
     // Store cube reference for animation
