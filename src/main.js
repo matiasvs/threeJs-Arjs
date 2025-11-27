@@ -78,7 +78,7 @@ function initAR() {
     // Setup marker controls
     new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
         type: 'pattern',
-        patternUrl: 'https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/data/patt.hiro',
+        patternUrl: import.meta.env.BASE_URL + 'markers/patts.patt',
     })
 
     // Create 3D object - animated cube
