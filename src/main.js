@@ -96,7 +96,13 @@ function initAR() {
             model.scale.set(0.3, 0.3, 0.3)
             // Center the model
             model.position.set(0, 0, 0)
-            model.rotation.set(0, 0, 0)
+
+            // Set final rotation (X: 320, Y: 0, Z: 190)
+            const x = THREE.MathUtils.degToRad(320)
+            const y = THREE.MathUtils.degToRad(0)
+            const z = THREE.MathUtils.degToRad(190)
+            model.rotation.set(x, y, z)
+
             markerRoot.add(model)
             console.log('Model loaded successfully')
 
@@ -117,32 +123,6 @@ function initAR() {
             console.error('An error happened loading the model:', error)
         }
     )
-
-    // Debug Sliders Logic
-    const rotX = document.getElementById('rot-x')
-    const rotY = document.getElementById('rot-y')
-    const rotZ = document.getElementById('rot-z')
-    const valX = document.getElementById('val-x')
-    const valY = document.getElementById('val-y')
-    const valZ = document.getElementById('val-z')
-
-    function updateRotation() {
-        if (currentModel) {
-            const x = THREE.MathUtils.degToRad(rotX.value)
-            const y = THREE.MathUtils.degToRad(rotY.value)
-            const z = THREE.MathUtils.degToRad(rotZ.value)
-
-            currentModel.rotation.set(x, y, z)
-
-            valX.textContent = rotX.value
-            valY.textContent = rotY.value
-            valZ.textContent = rotZ.value
-        }
-    }
-
-    rotX.addEventListener('input', updateRotation)
-    rotY.addEventListener('input', updateRotation)
-    rotZ.addEventListener('input', updateRotation)
 
     // Add lighting
     const directionalLight = new THREE.DirectionalLight(0xffffff, 2) // Increased intensity
