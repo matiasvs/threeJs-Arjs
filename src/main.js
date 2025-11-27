@@ -85,16 +85,18 @@ function initAR() {
     })
 
     // Load GLB Model
+    let currentModel = null
     const loader = new GLTFLoader()
     loader.load(
         import.meta.env.BASE_URL + 'models/model.glb',
         (gltf) => {
             const model = gltf.scene
+            currentModel = model
             // Adjust scale if needed (you might need to change this depending on your model size)
             model.scale.set(0.3, 0.3, 0.3)
             // Center the model
             model.position.set(0, 0, 0)
-            model.rotation.set(0, 0, 90)
+            model.rotation.set(0, 0, 0)
             markerRoot.add(model)
             console.log('Model loaded successfully')
 
@@ -115,6 +117,32 @@ function initAR() {
             console.error('An error happened loading the model:', error)
         }
     )
+
+    // Debug Sliders Logic
+    const rotX = document.getElementById('rot-x')
+    const rotY = document.getElementById('rot-y')
+    const rotZ = document.getElementById('rot-z')
+    const valX = document.getElementById('val-x')
+    const valY = document.getElementById('val-y')
+    const valZ = document.getElementById('val-z')
+
+    function updateRotation() {
+        if (currentModel) {
+            const x = THREE.MathUtils.degToRad(rotX.value)
+            const y = THREE.MathUtils.degToRad(rotY.value)
+            const z = THREE.MathUtils.degToRad(rotZ.value)
+
+            currentModel.rotation.set(x, y, z)
+
+            valX.textContent = rotX.value
+            valY.textContent = rotY.value
+            valZ.textContent = rotZ.value
+        }
+    }
+
+    rotX.addEventListener('input', updateRotation)
+    rotY.addEventListener('input', updateRotation)
+    rotZ.addEventListener('input', updateRotation)
 
     // Add lighting
     const directionalLight = new THREE.DirectionalLight(0xffffff, 2) // Increased intensity
