@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/threejs-arjs/',
+  base: '/threeJs-Arjs/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
