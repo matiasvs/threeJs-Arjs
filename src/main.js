@@ -1,6 +1,7 @@
 import './style.css'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 // Make THREE available globally
 window.THREE = THREE
@@ -35,7 +36,16 @@ function initAR() {
     renderer.domElement.style.position = 'absolute'
     renderer.domElement.style.top = '0px'
     renderer.domElement.style.left = '0px'
+    renderer.domElement.style.left = '0px'
     document.body.appendChild(renderer.domElement)
+
+    // Setup OrbitControls
+    const controls = new OrbitControls(camera, renderer.domElement)
+    controls.enableDamping = true
+    controls.dampingFactor = 0.05
+    controls.screenSpacePanning = false
+    controls.minDistance = 0.1
+    controls.maxDistance = 100
 
     // Setup AR.js source
     const arToolkitSource = new THREEx.ArToolkitSource({
@@ -151,6 +161,9 @@ function initAR() {
         if (arToolkitSource.ready !== false) {
             arToolkitContext.update(arToolkitSource.domElement)
         }
+
+        // Update controls
+        controls.update()
 
         // Update animations if any
         if (window.mixers) {
