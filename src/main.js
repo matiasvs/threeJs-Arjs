@@ -1,5 +1,6 @@
 import './style.css'
 import * as THREE from 'three'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 // Make THREE available globally
 window.THREE = THREE
@@ -71,6 +72,8 @@ function initAR() {
         console.log('AR.js context initialized successfully')
     })
 
+
+
     // Create marker root
     const markerRoot = new THREE.Group()
     scene.add(markerRoot)
@@ -81,25 +84,43 @@ function initAR() {
         patternUrl: import.meta.env.BASE_URL + 'markers/patts.patt',
     })
 
-    // Create 3D object - animated cube
-    // Cube 40% smaller (0.6 instead of 1)
-    const geometry = new THREE.BoxGeometry(0.6, 0.6, 0.6)
-    const material = new THREE.MeshNormalMaterial({
-        transparent: true,
-        opacity: 0.9,
-        side: THREE.DoubleSide
-    })
-    const cube = new THREE.Mesh(geometry, material)
-    // Position cube centered on marker but pushed back
-    cube.position.set(0, 0.3, -0.5) // x, y, z
-    markerRoot.add(cube)
+    // Load GLB Model
+    const loader = new GLTFLoader()
+    loader.load(
+        import.meta.env.BASE_URL + 'models/model.glb',
+        (gltf) => {
+            const model = gltf.scene
+            // Adjust scale if needed (you might need to change this depending on your model size)
+            model.scale.set(0.5, 0.5, 0.5)
+            // Center the model
+            model.position.set(0, 0, 0)
+            markerRoot.add(model)
+            console.log('Model loaded successfully')
+
+            // Optional: Add animation mixer if model has animations
+            if (gltf.animations && gltf.animations.length) {
+                const mixer = new THREE.AnimationMixer(model)
+                const action = mixer.clipAction(gltf.animations[0])
+                action.play()
+                // Add mixer to a global array or variable to update in animate loop
+                window.mixers = window.mixers || []
+                window.mixers.push(mixer)
+            }
+        },
+        (progress) => {
+            console.log('Loading model...', (progress.loaded / progress.total * 100) + '%')
+        },
+        (error) => {
+            console.error('An error happened loading the model:', error)
+        }
+    )
 
     // Add lighting
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1)
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 2) // Increased intensity
     directionalLight.position.set(0, 5, 5)
     scene.add(directionalLight)
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1) // Increased intensity
     scene.add(ambientLight)
 
     // Hide info overlay after delay
@@ -111,16 +132,21 @@ function initAR() {
     }, 5000)
 
     // Animation loop
+    const clock = new THREE.Clock()
+
     function animate() {
         requestAnimationFrame(animate)
+
+        const delta = clock.getDelta()
 
         if (arToolkitSource.ready !== false) {
             arToolkitContext.update(arToolkitSource.domElement)
         }
 
-        // Rotate cube 20% slower (0.008 instead of 0.01)
-        cube.rotation.x += 0.008
-        cube.rotation.y += 0.008
+        // Update animations if any
+        if (window.mixers) {
+            window.mixers.forEach(mixer => mixer.update(delta))
+        }
 
         renderer.render(scene, camera)
     }
