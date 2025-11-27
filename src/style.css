@@ -81,3 +81,21 @@ canvas {
   animation: fadeOut 1s forwards;
   animation-delay: 5s;
 }
+
+#loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 1000;
+  font-size: 18px;
+  backdrop-filter: blur(5px);
+}
+
+#loader.hide {
+  display: none;
+}

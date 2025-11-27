@@ -95,6 +95,9 @@ function initAR() {
     })
 
     // Load GLB Model
+    const loaderElement = document.getElementById('loader')
+    if (loaderElement) loaderElement.classList.remove('hide')
+
     let currentModel = null
     const loader = new GLTFLoader()
     loader.load(
@@ -116,6 +119,13 @@ function initAR() {
             markerRoot.add(model)
             console.log('Model loaded successfully')
 
+            if (loaderElement) {
+                loaderElement.textContent = '¡Modelo cargado!'
+                setTimeout(() => {
+                    loaderElement.classList.add('hide')
+                }, 2000)
+            }
+
             // Optional: Add animation mixer if model has animations
             if (gltf.animations && gltf.animations.length) {
                 const mixer = new THREE.AnimationMixer(model)
@@ -127,10 +137,18 @@ function initAR() {
             }
         },
         (progress) => {
-            console.log('Loading model...', (progress.loaded / progress.total * 100) + '%')
+            const percent = Math.round((progress.loaded / progress.total * 100))
+            console.log('Loading model...', percent + '%')
+            if (loaderElement) {
+                loaderElement.textContent = `Cargando modelo... ${percent}%`
+            }
         },
         (error) => {
             console.error('An error happened loading the model:', error)
+            if (loaderElement) {
+                loaderElement.textContent = 'Error al cargar el modelo'
+                loaderElement.style.color = 'red'
+            }
         }
     )
 
