@@ -94,70 +94,21 @@ function initAR() {
         patternUrl: import.meta.env.BASE_URL + 'markers/patts.patt',
     })
 
-    // Load GLB Model
-    const loaderElement = document.getElementById('loader')
-    const progressFill = document.getElementById('progress-fill')
-    const loaderPercent = document.getElementById('loader-percent')
+    // Create a simple rotating cube
+    const geometry = new THREE.BoxGeometry(1, 1, 1)
+    const material = new THREE.MeshStandardMaterial({
+        color: 0x4CAF50,
+        metalness: 0.3,
+        roughness: 0.4
+    })
+    const cube = new THREE.Mesh(geometry, material)
+    cube.position.set(0, 0.5, 0)
+    markerRoot.add(cube)
 
-    if (loaderElement) loaderElement.classList.remove('hide')
+    // Store cube reference for animation
+    window.rotatingCube = cube
 
-    let currentModel = null
-    const loader = new GLTFLoader()
-    loader.load(
-        import.meta.env.BASE_URL + 'models/model.glb',
-        (gltf) => {
-            const model = gltf.scene
-            currentModel = model
-            // Adjust scale if needed (you might need to change this depending on your model size)
-            model.scale.set(0.3, 0.3, 0.3)
-            // Center the model
-            model.position.set(0, 0, 0)
-
-            // Set final rotation (X: 320, Y: 0, Z: 190)
-            const x = THREE.MathUtils.degToRad(320)
-            const y = THREE.MathUtils.degToRad(0)
-            const z = THREE.MathUtils.degToRad(190)
-            model.rotation.set(x, y, z)
-
-            markerRoot.add(model)
-            console.log('Model loaded successfully')
-
-            if (loaderElement && loaderPercent) {
-                loaderPercent.textContent = '¡Completado!'
-                setTimeout(() => {
-                    loaderElement.classList.add('hide')
-                }, 1500)
-            }
-
-            // Optional: Add animation mixer if model has animations
-            if (gltf.animations && gltf.animations.length) {
-                const mixer = new THREE.AnimationMixer(model)
-                const action = mixer.clipAction(gltf.animations[0])
-                action.play()
-                // Add mixer to a global array or variable to update in animate loop
-                window.mixers = window.mixers || []
-                window.mixers.push(mixer)
-            }
-        },
-        (progress) => {
-            const percent = Math.round((progress.loaded / progress.total * 100))
-            console.log('Loading model...', percent + '%')
-
-            if (progressFill) {
-                progressFill.style.width = percent + '%'
-            }
-            if (loaderPercent) {
-                loaderPercent.textContent = percent + '%'
-            }
-        },
-        (error) => {
-            console.error('An error happened loading the model:', error)
-            if (loaderPercent) {
-                loaderPercent.textContent = 'Error al cargar'
-                loaderPercent.style.color = 'red'
-            }
-        }
-    )
+    console.log('Cube created successfully')
 
     // Add lighting
     const directionalLight = new THREE.DirectionalLight(0xffffff, 2) // Increased intensity
@@ -189,6 +140,11 @@ function initAR() {
 
         // Update controls
         controls.update()
+
+        // Rotate cube on Z axis
+        if (window.rotatingCube) {
+            window.rotatingCube.rotation.z += 0.01
+        }
 
         // Update animations if any
         if (window.mixers) {
