@@ -83,12 +83,13 @@ const geometry = new THREE.SphereGeometry(0.5, 32, 32)
 
 ### Usar otro marcador
 
-Cambia la URL del patrón en `src/main.js`:
+Para aprender a crear y usar tus propios marcadores personalizados, consulta la guía detallada:
+👉 **[Guía de Marcadores Personalizados](CUSTOM_MARKERS.md)**
 
 ```javascript
 const arMarkerControls = new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
   type: 'pattern',
-  patternUrl: 'ruta/a/tu/marcador.patt'
+  patternUrl: import.meta.env.BASE_URL + 'markers/tu-marcador.patt'
 })
 ```
 
