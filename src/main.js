@@ -90,7 +90,8 @@ function initAR() {
         side: THREE.DoubleSide
     })
     const cube = new THREE.Mesh(geometry, material)
-    cube.position.y = 0.3
+    // Position cube centered on marker
+    cube.position.set(0, 0.3, 0) // x, y, z
     markerRoot.add(cube)
 
     // Add lighting
