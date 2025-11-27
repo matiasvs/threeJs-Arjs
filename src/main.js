@@ -91,7 +91,7 @@ function initAR() {
         (gltf) => {
             const model = gltf.scene
             // Adjust scale if needed (you might need to change this depending on your model size)
-            model.scale.set(0.5, 0.5, 0.5)
+            model.scale.set(0.4, 0.4, 0.4)
             // Center the model
             model.position.set(0, 0, 0)
             markerRoot.add(model)
