@@ -1,14 +1,24 @@
 import './style.css'
 import * as THREE from 'three'
+import '@ar-js-org/ar.js/three.js/build/ar-threex-location-only'
+import '@ar-js-org/ar.js'
 
-// Initialize Three.js scene
+// Make THREE available globally for AR.js
+window.THREE = THREE
+
+// Initialize scene
 const scene = new THREE.Scene()
 
-// Camera setup
-const camera = new THREE.Camera()
+// Setup camera
+const camera = new THREE.PerspectiveCamera(
+    70,
+    window.innerWidth / window.innerHeight,
+    0.01,
+    1000
+)
 scene.add(camera)
 
-// Renderer setup
+// Setup renderer
 const renderer = new THREE.WebGLRenderer({
     antialias: true,
     alpha: true
@@ -20,19 +30,20 @@ renderer.domElement.style.top = '0px'
 renderer.domElement.style.left = '0px'
 document.body.appendChild(renderer.domElement)
 
-// AR.js setup
-const arToolkitSource = new THREEx.ArToolkitSource({
+// Setup AR.js
+const arToolkitSource = new window.THREEx.ArToolkitSource({
     sourceType: 'webcam',
 })
 
 arToolkitSource.init(() => {
+    console.log('Camera initialized')
     onResize()
 }, (error) => {
-    console.error('Error initializing AR source:', error)
-    alert('No se pudo acceder a la cámara. Por favor, permite el acceso a la cámara y recarga la página.')
+    console.error('Error initializing camera:', error)
+    alert('No se pudo acceder a la cámara. Por favor, permite el acceso y recarga la página.')
 })
 
-// Handle resize
+// Handle window resize
 window.addEventListener('resize', onResize)
 
 function onResize() {
@@ -43,31 +54,32 @@ function onResize() {
     }
 }
 
-// AR.js context
-const arToolkitContext = new THREEx.ArToolkitContext({
+// Setup AR.js context
+const arToolkitContext = new window.THREEx.ArToolkitContext({
     cameraParametersUrl: 'https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/data/camera_para.dat',
-    detectionMode: 'mono'
+    detectionMode: 'mono',
 })
 
 arToolkitContext.init(() => {
     camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix())
-    console.log('AR.js initialized successfully')
+    console.log('AR.js context initialized')
 })
 
-// Marker setup
+// Create marker root
 const markerRoot = new THREE.Group()
 scene.add(markerRoot)
 
-const arMarkerControls = new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
+// Setup marker controls
+new window.THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
     type: 'pattern',
-    patternUrl: 'https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/data/patt.hiro'
+    patternUrl: 'https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/data/patt.hiro',
 })
 
-// Add 3D object (rotating cube)
+// Create 3D object - animated cube
 const geometry = new THREE.BoxGeometry(1, 1, 1)
 const material = new THREE.MeshNormalMaterial({
     transparent: true,
-    opacity: 0.8,
+    opacity: 0.9,
     side: THREE.DoubleSide
 })
 const cube = new THREE.Mesh(geometry, material)
@@ -75,11 +87,11 @@ cube.position.y = 0.5
 markerRoot.add(cube)
 
 // Add lighting
-const light = new THREE.DirectionalLight(0xffffff, 1)
-light.position.set(0, 5, 5)
-scene.add(light)
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1)
+directionalLight.position.set(0, 5, 5)
+scene.add(directionalLight)
 
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.6)
 scene.add(ambientLight)
 
 // Hide info overlay after delay
@@ -88,13 +100,13 @@ setTimeout(() => {
     if (info) {
         info.classList.add('hide')
     }
-}, 1000)
+}, 5000)
 
 // Animation loop
 function animate() {
     requestAnimationFrame(animate)
 
-    if (arToolkitSource.ready) {
+    if (arToolkitSource.ready !== false) {
         arToolkitContext.update(arToolkitSource.domElement)
     }
 
@@ -106,3 +118,4 @@ function animate() {
 }
 
 animate()
+console.log('AR application started')
