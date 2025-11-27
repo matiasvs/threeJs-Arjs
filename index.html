@@ -11,7 +11,13 @@
 
 <body>
     <div id="app">
-        <div id="loader" class="hide">Cargando modelo... 0%</div>
+        <div id="loader" class="hide">
+            <div class="loader-text">Cargando modelo 3D...</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="loader-percent" id="loader-percent">0%</div>
+        </div>
         <div id="info">
             <h1>🚀 Three.js + AR.js</h1>
             <p>¡Bienvenido! Apunta tu cámara al marcador personalizado para ver el objeto 3D en realidad aumentada</p>

@@ -96,6 +96,9 @@ function initAR() {
 
     // Load GLB Model
     const loaderElement = document.getElementById('loader')
+    const progressFill = document.getElementById('progress-fill')
+    const loaderPercent = document.getElementById('loader-percent')
+
     if (loaderElement) loaderElement.classList.remove('hide')
 
     let currentModel = null
@@ -119,11 +122,11 @@ function initAR() {
             markerRoot.add(model)
             console.log('Model loaded successfully')
 
-            if (loaderElement) {
-                loaderElement.textContent = '¡Modelo cargado!'
+            if (loaderElement && loaderPercent) {
+                loaderPercent.textContent = '¡Completado!'
                 setTimeout(() => {
                     loaderElement.classList.add('hide')
-                }, 2000)
+                }, 1500)
             }
 
             // Optional: Add animation mixer if model has animations
@@ -139,15 +142,19 @@ function initAR() {
         (progress) => {
             const percent = Math.round((progress.loaded / progress.total * 100))
             console.log('Loading model...', percent + '%')
-            if (loaderElement) {
-                loaderElement.textContent = `Cargando modelo... ${percent}%`
+
+            if (progressFill) {
+                progressFill.style.width = percent + '%'
+            }
+            if (loaderPercent) {
+                loaderPercent.textContent = percent + '%'
             }
         },
         (error) => {
             console.error('An error happened loading the model:', error)
-            if (loaderElement) {
-                loaderElement.textContent = 'Error al cargar el modelo'
-                loaderElement.style.color = 'red'
+            if (loaderPercent) {
+                loaderPercent.textContent = 'Error al cargar'
+                loaderPercent.style.color = 'red'
             }
         }
     )
