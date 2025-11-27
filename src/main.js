@@ -6,7 +6,7 @@ window.THREE = THREE
 
 // Load AR.js dynamically after THREE is available
 const script = document.createElement('script')
-script.src = 'https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar.js'
+script.src = 'https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar-threex.js'
 script.onload = initAR
 script.onerror = () => {
     console.error('Failed to load AR.js')
