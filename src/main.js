@@ -82,14 +82,15 @@ function initAR() {
     })
 
     // Create 3D object - animated cube
-    const geometry = new THREE.BoxGeometry(1, 1, 1)
+    // Cube 40% smaller (0.6 instead of 1)
+    const geometry = new THREE.BoxGeometry(0.6, 0.6, 0.6)
     const material = new THREE.MeshNormalMaterial({
         transparent: true,
         opacity: 0.9,
         side: THREE.DoubleSide
     })
     const cube = new THREE.Mesh(geometry, material)
-    cube.position.y = 0.5
+    cube.position.y = 0.3
     markerRoot.add(cube)
 
     // Add lighting
@@ -116,9 +117,9 @@ function initAR() {
             arToolkitContext.update(arToolkitSource.domElement)
         }
 
-        // Rotate cube
-        cube.rotation.x += 0.01
-        cube.rotation.y += 0.01
+        // Rotate cube 20% slower (0.008 instead of 0.01)
+        cube.rotation.x += 0.008
+        cube.rotation.y += 0.008
 
         renderer.render(scene, camera)
     }
