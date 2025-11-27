@@ -24,7 +24,7 @@ canvas {
 
 #info {
   position: absolute;
-  top: 20px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(0, 0, 0, 0.7);
@@ -67,8 +67,14 @@ canvas {
 
 /* Hide info after 5 seconds */
 @keyframes fadeOut {
-  from { opacity: 1; }
-  to { opacity: 0; pointer-events: none; }
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 #info.hide {
